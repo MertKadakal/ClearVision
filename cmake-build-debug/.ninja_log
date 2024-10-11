@@ -1,0 +1,7 @@
+# ninja log v6
+20	294	7502856334300232	CMakeFiles/clearvision.dir/Filter.cpp.obj	4e50d20a37438ebb
+10	504	7502856334200222	CMakeFiles/clearvision.dir/SecretImage.cpp.obj	6ac5247b478dc8ce
+25	579	7502856334350232	CMakeFiles/clearvision.dir/Crypto.cpp.obj	29f95b20d017e049
+4	661	7502856334150219	CMakeFiles/clearvision.dir/main.cpp.obj	ece2dde1323f1ae1
+14	1331	7502856334240220	CMakeFiles/clearvision.dir/GrayscaleImage.cpp.obj	c45a32ed3725d3e
+1331	1526	7502856347418578	clearvision.exe	3dc768abb47bf1a7
