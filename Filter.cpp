@@ -95,28 +95,20 @@ void Filter::apply_gaussian_smoothing(GrayscaleImage& image, int kernelSize, dou
 
 // Unsharp Masking Filter
 void Filter::apply_unsharp_mask(GrayscaleImage& image, int kernelSize, double amount) {
-    // Gaussian bulanıklaştırmayı uygulamak için yeni bir görüntü kopyası oluştur
+    //creating a GaussianFilter-applied image
     GrayscaleImage imageGaussed(image);
-    apply_gaussian_smoothing(imageGaussed, kernelSize, 1); // Gaussian smoothing uygula
+    apply_gaussian_smoothing(imageGaussed, kernelSize, 1);
 
-    // Her piksel için unsharp mask formülünü uygula
-    for (int i = 0; i < image.get_height(); i++) {
-        for (int j = 0; j < image.get_width(); j++) {
-            // Orijinal piksel değerini al
-            int originalPixel = image.get_pixel(i, j);
-            // Bulanık piksel değerini al
-            int blurredPixel = imageGaussed.get_pixel(i, j);
-
-            // Unsharp mask formülünü uygula
-            int sharpenedPixel = static_cast<int>(originalPixel + amount * (originalPixel - blurredPixel));
-
-            // Değerleri 0-255 aralığında kısıtla (clip)
-            sharpenedPixel = std::max(0, std::min(255, sharpenedPixel));
-
-            // Keskinleştirilmiş pikseli görüntüye ayarla
-            image.set_pixel(i, j, sharpenedPixel);
+    //creating an image defines "amount*(original-gaussianFiltered)"
+    GrayscaleImage substractedImg = image - substractedImg;
+    for (int i = 0; i < substractedImg.get_height(); i++) {
+        for (int j = 0; j < substractedImg.get_width(); j++) {
+            substractedImg.set_pixel(i, j, amount*substractedImg.get_pixel(i, j));
         }
     }
+
+    //adding amount*(original-gaussianFiltered) to original
+    image = image + substractedImg;
 
     // Sonucu bir dosyaya kaydet
     image.save_to_file("UnsharpMask_output.jpg");

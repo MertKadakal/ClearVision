@@ -49,6 +49,19 @@ GrayscaleImage::GrayscaleImage(int** inputData, int h, int w) {
 GrayscaleImage::GrayscaleImage(int w, int h) : width(w), height(h) {
     // TODO: Your code goes here.
     // Just dynamically allocate the memory for the new matrix.
+    // Dinamik olarak bellekte yer ayırıyoruz
+    data = new int*[height]; // Satırlar için yer ayır
+
+    for (int i = 0; i < height; ++i) {
+        data[i] = new int[width]; // Her satırın sütunları için yer ayır
+    }
+
+    // Başlangıçta tüm piksellere sıfır değerini verelim (siyah olsunlar)
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            data[i][j] = 0; // Piksel değerini 0'a ayarla
+        }
+    }
 }
 
 // Copy constructor
@@ -86,8 +99,8 @@ bool GrayscaleImage::operator==(const GrayscaleImage& other) const {
     // Check if two images have the same dimensions and pixel values.
     // If they do, return true.
 
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             if (data[i][j] != other.data[i][j]) {
                 return false;
             }
@@ -103,8 +116,8 @@ GrayscaleImage GrayscaleImage::operator+(const GrayscaleImage& other) const {
     
     // TODO: Your code goes here.
     // Add two images' pixel values and return a new image, clamping the results.
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             if (data[i][j] + other.data[i][j] > 255) {
                 result.set_pixel(i, j, 255);
             } else {
@@ -120,11 +133,12 @@ GrayscaleImage GrayscaleImage::operator+(const GrayscaleImage& other) const {
 GrayscaleImage GrayscaleImage::operator-(const GrayscaleImage& other) const {
     // Create a new image for the result
     GrayscaleImage result(width, height);
-    
+
+    std::cout << "width: " << other.width << ", height: " << other.height << std::endl;
     // TODO: Your code goes here.
     // Subtract pixel values of two images and return a new image, clamping the results.
-    for (int i = 0; i < height; ++i) {
-        for (int j = 0; j < width; ++j) {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
             if (data[i][j] - other.data[i][j] < 0) {
                 result.set_pixel(i, j, 0);
             } else {
