@@ -111,8 +111,7 @@ int main(int argc, char** argv) {
         );
     }
 
-    //std::string operation = argv[1];
-    std::string operation = "mean";
+    std::string operation = argv[1];
 
     try {
         // Parse and execute the specified operation

@@ -85,7 +85,15 @@ bool GrayscaleImage::operator==(const GrayscaleImage& other) const {
     // TODO: Your code goes here.
     // Check if two images have the same dimensions and pixel values.
     // If they do, return true.
-    return false;
+
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (data[i][j] != other.data[i][j]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 // Addition operator
@@ -95,6 +103,15 @@ GrayscaleImage GrayscaleImage::operator+(const GrayscaleImage& other) const {
     
     // TODO: Your code goes here.
     // Add two images' pixel values and return a new image, clamping the results.
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (data[i][j] + other.data[i][j] > 255) {
+                result.set_pixel(i, j, 255);
+            } else {
+                result.set_pixel(i, j, data[i][j] + other.data[i][j]);
+            }
+        }
+    }
 
     return result;
 }
@@ -106,6 +123,15 @@ GrayscaleImage GrayscaleImage::operator-(const GrayscaleImage& other) const {
     
     // TODO: Your code goes here.
     // Subtract pixel values of two images and return a new image, clamping the results.
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (data[i][j] - other.data[i][j] < 0) {
+                result.set_pixel(i, j, 0);
+            } else {
+                result.set_pixel(i, j, data[i][j] - other.data[i][j]);
+            }
+        }
+    }
 
     return result;
 }
