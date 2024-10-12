@@ -43,6 +43,12 @@ GrayscaleImage::GrayscaleImage(int** inputData, int h, int w) {
     // TODO: Your code goes here.
     // Initialize the image with a pre-existing data matrix by copying the values.
     // Don't forget to dynamically allocate memory for the matrix.
+    GrayscaleImage image(h, w);
+    for (int i = 0; i < h; i++) {
+        for (int j = 0; j < w; j++) {
+            image.set_pixel(h, w, inputData[i][j]);
+        }
+    }
 }
 
 // Constructor to create a blank image of given width and height
@@ -89,8 +95,10 @@ GrayscaleImage::GrayscaleImage(const GrayscaleImage& other) {
 
 // Destructor
 GrayscaleImage::~GrayscaleImage() {
-    // TODO: Your code goes here.
-    // Destructor: deallocate memory for the matrix.
+    for (int i = 0; i < height; ++i) {
+        delete[] data[i]; // Her bir satırı serbest bırak
+    }
+    delete[] data; // Satırların tutulduğu ana yapıyı serbest bırak
 }
 
 // Equality operator
@@ -134,7 +142,6 @@ GrayscaleImage GrayscaleImage::operator-(const GrayscaleImage& other) const {
     // Create a new image for the result
     GrayscaleImage result(width, height);
 
-    std::cout << "width: " << other.width << ", height: " << other.height << std::endl;
     // TODO: Your code goes here.
     // Subtract pixel values of two images and return a new image, clamping the results.
     for (int i = 0; i < height; i++) {

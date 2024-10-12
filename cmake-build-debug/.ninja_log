@@ -11,3 +11,7 @@
 39	750	7503894454450751	CMakeFiles/clearvision.dir/main.cpp.obj	af0b093372289350
 53	1438	7503894454602694	CMakeFiles/clearvision.dir/GrayscaleImage.cpp.obj	528b4fd8582810fb
 1438	1670	7503894468440607	clearvision.exe	3dc768abb47bf1a7
+43	783	7504684892633551	CMakeFiles/clearvision.dir/main.cpp.obj	af0b093372289350
+57	787	7504684892774996	CMakeFiles/clearvision.dir/Filter.cpp.obj	6b01d3246c1e2b32
+52	1445	7504684892713677	CMakeFiles/clearvision.dir/GrayscaleImage.cpp.obj	528b4fd8582810fb
+1445	1682	7504684906645642	clearvision.exe	3dc768abb47bf1a7

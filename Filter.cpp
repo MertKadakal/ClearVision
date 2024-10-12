@@ -95,22 +95,74 @@ void Filter::apply_gaussian_smoothing(GrayscaleImage& image, int kernelSize, dou
 
 // Unsharp Masking Filter
 void Filter::apply_unsharp_mask(GrayscaleImage& image, int kernelSize, double amount) {
-    //creating a GaussianFilter-applied image
-    GrayscaleImage imageGaussed(image);
-    apply_gaussian_smoothing(imageGaussed, kernelSize, 1);
+    // copy the input image into another image
+    GrayscaleImage imageCopy(image);
 
-    //creating an image defines "amount*(original-gaussianFiltered)"
-    GrayscaleImage substractedImg = image - substractedImg;
-    for (int i = 0; i < substractedImg.get_height(); i++) {
-        for (int j = 0; j < substractedImg.get_width(); j++) {
-            substractedImg.set_pixel(i, j, amount*substractedImg.get_pixel(i, j));
+    // sigma value for Gaussian calculation (you can adjust it if needed)
+    double sigma = 1.0;
+
+    // this for loop executes gauss filter for each pixel
+    for (int i = 0; i < image.get_height(); i++) {
+        for (int j = 0; j < image.get_width(); j++) {
+            std::vector<double> gausses;
+            std::vector<int> pixel_datas;
+            int starting_height = i - (kernelSize - 1) / 2;
+            int starting_width = j - (kernelSize - 1) / 2;
+
+            for (int h = 0; h < kernelSize; h++) {
+                for (int w = 0; w < kernelSize; w++) {
+                    // Gauss formülünü uyguluyoruz
+                    int x = h - (kernelSize - 1) / 2;
+                    int y = w - (kernelSize - 1) / 2;
+                    double gauss = (1.0 / (2 * M_PI * sigma * sigma)) * exp(-(x * x + y * y) / (2 * sigma * sigma));
+
+                    // Gauss değerini ve piksel bilgisini kaydediyoruz
+                    gausses.push_back(gauss);
+
+                    if (!(starting_height + h >= image.get_height() || starting_width + w >= image.get_width() || starting_height + h < 0 || starting_width + w < 0)) {
+                        pixel_datas.push_back(image.get_data()[starting_height + h][starting_width + w]);
+                    } else {
+                        // Sınır dışında kalan pikselleri ihmal edin
+                        pixel_datas.push_back(0);
+                    }
+                }
+            }
+
+            // Ağırlıkların ve piksel değerlerinin toplamını hesapla
+            double total_gausses = 0;
+            double total_weights = 0;
+            for (int h = 0; h < gausses.size(); h++) {
+                total_gausses += gausses[h];
+                total_weights += gausses[h] * pixel_datas[h];
+            }
+
+            // Normalizasyon
+            double final_gauss = 0;
+            if (total_gausses != 0) {
+                final_gauss = total_weights / total_gausses;
+            }
+
+            imageCopy.set_pixel(i, j, static_cast<int>(final_gauss));
         }
     }
 
-    //adding amount*(original-gaussianFiltered) to original
-    image = image + substractedImg;
+    // Unsharp mask uygulaması
+    for (int i = 0; i < image.get_height(); i++) {
+        for (int j = 0; j < image.get_width(); j++) {
+            int diff = image.get_pixel(i, j) - imageCopy.get_pixel(i, j);
+            int new_value = image.get_pixel(i, j) + static_cast<int>(amount * diff);
 
-    // Sonucu bir dosyaya kaydet
-    image.save_to_file("UnsharpMask_output.jpg");
+            // 0-255 aralığına sıkıştırma
+            if (new_value > 255) {
+                new_value = 255;
+            } else if (new_value < 0) {
+                new_value = 0;
+            }
+
+            image.set_pixel(i, j, new_value);
+        }
+    }
+
+    // Sonucu dosyaya kaydet
+    image.save_to_file("UnsharpenFilter_output.jpg");
 }
-
