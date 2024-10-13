@@ -42,12 +42,18 @@ std::vector<int> Crypto::encrypt_message(const std::string& message) {
     // 2. Collect the bits into the LSB array.
     // 3. Return the array of bits.
 
+    for (size_t i = 0; i < message.length(); i++) {
+        std::bitset<7> bits(message[i]);
+        for (int j = 6; j >= 0; j--) {
+            LSB_array.push_back(bits[j]);
+        }
+    }
+
     return LSB_array;
 }
 
 // Embed LSB array into GrayscaleImage starting from the last bit of the image
 SecretImage Crypto::embed_LSBits(GrayscaleImage& image, const std::vector<int>& LSB_array) {
-    SecretImage secret_image(nullptr);
     // TODO: Your code goes here.
 
     // 1. Ensure the image has enough pixels to store the LSB array, else throw an error.
@@ -56,6 +62,30 @@ SecretImage Crypto::embed_LSBits(GrayscaleImage& image, const std::vector<int>& 
     // 3. Iterate over the image pixels, embedding LSBs from the array.
     // 4. Return a SecretImage object constructed from the given GrayscaleImage 
     //    with the embedded message.
+
+    int starting_row = (image.get_height() - (LSB_array.size() / image.get_width())) - 1;
+    int starting_col = image.get_width() - (LSB_array.size() % image.get_width());
+
+    int LSB_index = 0;
+
+    if (starting_col >= 0) {
+        for (int j = starting_col; j < image.get_width() && LSB_index < LSB_array.size(); j++) {
+            // Pikselin LSB'sini değiştiriyoruz
+            int pixel_value = image.get_pixel(starting_row, j);
+            image.set_pixel(starting_row, j, (pixel_value & ~1) | LSB_array[LSB_index++]);
+        }
+    }
+
+    for (int i = starting_row + 1; i < image.get_height() && LSB_index < LSB_array.size(); i++) {
+        for (int j = 0; j < image.get_width() && LSB_index < LSB_array.size(); j++) {
+            // Pikselin LSB'sini değiştiriyoruz
+            int pixel_value = image.get_pixel(i, j);
+            image.set_pixel(i, j, (pixel_value & ~1) | LSB_array[LSB_index++]);
+        }
+    }
+
+
+    SecretImage secret_image(image);
 
     return secret_image;
 }

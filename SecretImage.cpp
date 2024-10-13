@@ -117,6 +117,7 @@ void SecretImage::save_to_file(const std::string& filename) {
 
     std::ofstream outFile(filename);
 
+    outFile << width << " " << height << std::endl;
     // upper_triangular
     for (int i = 0; i < (width * (width + 1)) / 2; i++) {
         outFile << upper_triangular[i];
