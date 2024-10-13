@@ -34,6 +34,7 @@ GrayscaleImage::GrayscaleImage(const char* filename) {
         }
     }
 
+    std::cout << width << " " << height << std::endl;
     // Free the dynamically allocated memory of stbi image
     stbi_image_free(image);
 }

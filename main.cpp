@@ -64,7 +64,7 @@ void compare_images(const char* img1, const char* img2) {
 void disguise_image(const char* input_image) {
     GrayscaleImage img(input_image);
     SecretImage secret_img(img);
-    std::string output_filename = "secret_image_" + remove_extension(input_image) + ".dat";
+    std::string output_filename = "secret_image_31" + remove_extension(input_image) + ".dat";
     secret_img.save_to_file(output_filename.c_str());
 }
 
