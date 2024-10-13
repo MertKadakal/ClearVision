@@ -15,6 +15,22 @@ std::vector<int> Crypto::extract_LSBits(SecretImage& secret_image, int message_l
     //    the last LSB to extract is in the last pixel of the image.
     // 6. Extract LSBs from the image pixels and return the result.
 
+    GrayscaleImage image = secret_image.reconstruct();
+
+    int starting_row = (image.get_height() - (message_length*7 / image.get_width())) - 1;
+    int starting_col = image.get_width() - (message_length*7 % image.get_width());
+
+    if (starting_col >= 0) {
+        for (int j = starting_col; j < image.get_width(); j++) {
+            LSB_array.push_back(image.get_pixel(starting_row, j) % 2);
+        }
+    }
+    for (int i = starting_row + 1; i < image.get_height(); i++) {
+        for (int j = 0; j < image.get_width(); j++) {
+            LSB_array.push_back(image.get_pixel(i, j) % 2);
+        }
+    }
+
     return LSB_array;
 }
 
@@ -28,6 +44,22 @@ std::string Crypto::decrypt_message(const std::vector<int>& LSB_array) {
     // 2. Convert each group of 7 bits into an ASCII character.
     // 3. Collect the characters to form the decrypted message.
     // 4. Return the resulting message.
+
+    // Her bir 7 elemanlık parçayı işle
+    for (size_t i = 0; i < LSB_array.size(); i += 7) {
+        // 7-bit'lik binary string oluştur
+        std::string binary_string;
+        for (size_t j = 0; j < 7; ++j) {
+            binary_string += std::to_string(LSB_array[i + j]);
+        }
+
+        // 7-bit'lik binary string'i integer'a çevir
+        std::bitset<7> bitset_value(binary_string);
+        char ascii_char = static_cast<char>(bitset_value.to_ulong());
+
+        message += ascii_char;
+
+    }
 
     return message;
 }
