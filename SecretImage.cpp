@@ -1,5 +1,8 @@
 #include "SecretImage.h"
 
+#include <cmath>
+#include <vector>
+
 
 // Constructor: split image into upper and lower triangular arrays
 SecretImage::SecretImage(const GrayscaleImage& image) {
@@ -38,6 +41,31 @@ SecretImage::SecretImage(int w, int h, int * upper, int * lower) {
     // TODO: Your code goes here.
     // Since file reading part should dynamically allocate upper and lower matrices.
     // You should simply copy the parameters to instance variables.
+
+    width = w;
+    height = h;
+
+    upper_triangular = new int [(width * (width + 1)) / 2];
+    lower_triangular = new int [(width * (width - 1)) / 2];
+
+    int upper_index = 0;
+    int lower_index = 0;
+
+    // Fill both matrices
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
+            if (col >= row) {
+                // Array for upper triangular part (including diagonal)
+                upper_triangular[upper_index] = upper[upper_index];
+                upper_index++;
+            }
+            if (col < row) {
+                // Array for lower triangular part (excluding diagonal)
+                lower_triangular[lower_index] = lower[lower_index];
+                lower_index++;
+            }
+        }
+    }
 }
 
 
@@ -52,23 +80,21 @@ SecretImage::~SecretImage() {
 }
 
 // Reconstructs and returns the full image from upper and lower triangular matrices.
-GrayscaleImage SecretImage::reconstruct() const {
+GrayscaleImage SecretImage::reconstruct() {
     GrayscaleImage image(width, height);
     // TODO: Your code goes here.
+    int upperIndex = 0;
+    int lowerIndex = 0;
 
-    int upper_index = 0;
-    int lower_index = 0;
-
-    for (int row = 0; row < height; row++) {
-        for (int col = 0; col < width; col++) {
-            if (col >= row) {
-                image.set_pixel(row, col, upper_triangular[upper_index++]);
+    for (int i = 0; i < width; ++i) {
+        for (int j = 0; j < height; ++j) {
+            if (j >= i) {
+                image.set_pixel(i, j, upper_triangular[upperIndex++]);
             } else {
-                image.set_pixel(row, col, lower_triangular[lower_index++]);
+                image.set_pixel(i, j, lower_triangular[lowerIndex++]);
             }
         }
     }
-
     return image;
 }
 
@@ -91,7 +117,6 @@ void SecretImage::save_to_file(const std::string& filename) {
 
     std::ofstream outFile(filename);
 
-    outFile << width << " " << height << std::endl;
     // upper_triangular
     for (int i = 0; i < (width * (width + 1)) / 2; i++) {
         outFile << upper_triangular[i];
@@ -123,7 +148,59 @@ SecretImage SecretImage::load_from_file(const std::string& filename) {
     // 6. Close the file and return a SecretImage object initialized with the
     //    width, height, and triangular arrays.
 
-    SecretImage secret_image(nullptr);
+    std::ifstream file(filename);
+
+    //split the lines
+    std::string line1;
+    std::vector<std::string> tokens;
+    while (std::getline(file, line1)) {
+        std::stringstream ss(line1);
+        std::string token;
+        // Satırı belirli bir ayırıcıya göre böl
+        while (std::getline(ss, token)) {
+            tokens.push_back(token);
+        }
+    }
+
+    std::vector<std::string> upper_vector;
+    std::vector<std::string> lower_vector;
+
+    //upper
+    std::string input = tokens.at(1);
+    std::vector<int> vec;
+    std::stringstream ss(input);
+    int number;
+
+    while (ss >> number) {
+        vec.push_back(number);
+    }
+
+    int size = vec.size();
+    int* arr = new int[size];
+
+    for (int i = 0; i < size; ++i) {
+        arr[i] = vec[i];
+    }
+
+    //lower
+    std::string input1 = tokens.at(2);
+    std::vector<int> vec1;
+    std::stringstream ss1(input1);
+    int number1;
+
+    while (ss1 >> number1) {
+        vec1.push_back(number1);
+    }
+
+    int size1 = vec1.size();
+    int* arr1 = new int[size1];
+
+    for (int i = 0; i < size1; ++i) {
+        arr1[i] = vec1[i];
+    }
+
+    int dimensions = std::sqrt(vec.size()+vec1.size());
+    SecretImage secret_image(dimensions, dimensions, arr, arr1);
     return secret_image;
 }
 

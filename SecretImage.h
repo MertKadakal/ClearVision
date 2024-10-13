@@ -29,7 +29,7 @@ public:
     ~SecretImage();
 
     // Function to reconstruct the image from two arrays
-    GrayscaleImage reconstruct() const;
+    GrayscaleImage reconstruct();
 
     // Save back to triangular arrays after filtering
     void save_back(const GrayscaleImage &image);
