@@ -5,8 +5,6 @@
 // Extract the least significant bits (LSBs) from SecretImage, calculating x, y based on message length
 std::vector<int> Crypto::extract_LSBits(SecretImage& secret_image, int message_length) {
     std::vector<int> LSB_array;
-    // TODO: Your code goes here.
-
     // 1. Reconstruct the SecretImage to a GrayscaleImage.
     // 2. Calculate the image dimensions.
     // 3. Determine the total bits required based on message length.
@@ -38,22 +36,17 @@ std::vector<int> Crypto::extract_LSBits(SecretImage& secret_image, int message_l
 // Decrypt message by converting LSB array into ASCII characters
 std::string Crypto::decrypt_message(const std::vector<int>& LSB_array) {
     std::string message;
-    // TODO: Your code goes here.
-
     // 1. Verify that the LSB array size is a multiple of 7, else throw an error.
     // 2. Convert each group of 7 bits into an ASCII character.
     // 3. Collect the characters to form the decrypted message.
     // 4. Return the resulting message.
 
-    // Her bir 7 elemanlık parçayı işle
     for (size_t i = 0; i < LSB_array.size(); i += 7) {
-        // 7-bit'lik binary string oluştur
         std::string binary_string;
         for (size_t j = 0; j < 7; ++j) {
             binary_string += std::to_string(LSB_array[i + j]);
         }
 
-        // 7-bit'lik binary string'i integer'a çevir
         std::bitset<7> bitset_value(binary_string);
         char ascii_char = static_cast<char>(bitset_value.to_ulong());
 
@@ -67,8 +60,6 @@ std::string Crypto::decrypt_message(const std::vector<int>& LSB_array) {
 // Encrypt message by converting ASCII characters into LSBs
 std::vector<int> Crypto::encrypt_message(const std::string& message) {
     std::vector<int> LSB_array;
-    // TODO: Your code goes here.
-
     // 1. Convert each character of the message into a 7-bit binary representation.
     //    You can use std::bitset.
     // 2. Collect the bits into the LSB array.
@@ -86,8 +77,6 @@ std::vector<int> Crypto::encrypt_message(const std::string& message) {
 
 // Embed LSB array into GrayscaleImage starting from the last bit of the image
 SecretImage Crypto::embed_LSBits(GrayscaleImage& image, const std::vector<int>& LSB_array) {
-    // TODO: Your code goes here.
-
     // 1. Ensure the image has enough pixels to store the LSB array, else throw an error.
     // 2. Find the starting pixel based on the message length knowing that  
     //    the last LSB to embed should end up in the last pixel of the image.
@@ -102,7 +91,6 @@ SecretImage Crypto::embed_LSBits(GrayscaleImage& image, const std::vector<int>& 
 
     if (starting_col >= 0) {
         for (int j = starting_col; j < image.get_width() && LSB_index < LSB_array.size(); j++) {
-            // Pikselin LSB'sini değiştiriyoruz
             int pixel_value = image.get_pixel(starting_row, j);
             image.set_pixel(starting_row, j, (pixel_value & ~1) | LSB_array[LSB_index++]);
         }
@@ -110,12 +98,10 @@ SecretImage Crypto::embed_LSBits(GrayscaleImage& image, const std::vector<int>& 
 
     for (int i = starting_row + 1; i < image.get_height() && LSB_index < LSB_array.size(); i++) {
         for (int j = 0; j < image.get_width() && LSB_index < LSB_array.size(); j++) {
-            // Pikselin LSB'sini değiştiriyoruz
             int pixel_value = image.get_pixel(i, j);
             image.set_pixel(i, j, (pixel_value & ~1) | LSB_array[LSB_index++]);
         }
     }
-
 
     SecretImage secret_image(image);
 
