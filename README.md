@@ -1,4 +1,5 @@
-ClearVision Defense
+***ClearVision Defense***
+
 ClearVision Defense is a C++ application that focuses on enhancing image clarity and security by applying image filters and embedding/decrypting secret messages within images. The application is particularly useful in defense operations, such as satellite reconnaissance, low-light surveillance, and classified intelligence.
 
 
