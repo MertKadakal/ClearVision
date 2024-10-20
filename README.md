@@ -21,13 +21,21 @@ Secret Message Decryption: Extracts and decrypts hidden messages from images.
 **Project Structure**
 
 ├── Crypto.cpp
+
 ├── Crypto.h
+
 ├── Filter.cpp
+
 ├── Filter.h
+
 ├── GrayscaleImage.cpp
+
 ├── GrayscaleImage.h
+
 ├── SecretImage.cpp
+
 ├── SecretImage.h
+
 └── README.md
 
 
